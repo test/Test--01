@@ -58,7 +58,7 @@ loglog(N_a,epsilon_a,'gr*');
 hold on
 %regressive Kennlinie Gesamtdehnung
 loglog(Nw,subs(e_DWL,N,Nw));
-%regressive Kennlinie elastische Dehnung
+%regressive Kennlinien elastische Dehnung
 loglog(Nw,subs(e_DWL_elast,N,Nw),'r');
 %regressive Kennlinie plastische Dehnung
 loglog(Nw,subs(e_DWL_plast,N,Nw),'y');
@@ -90,8 +90,41 @@ hold off;
 xlabel('Dehnung \epsilon');
 ylabel('Spannung \sigma_a')
 
+% Bestimmen der ZSD-Parameter ueber Kompatibilitaetsbed
+n_sKomp=eval(b/c);
+K_sKomp=eval(sigma_f/(epsilon_f^(b/c)));
 
+%Funktion der ZSD --> Laufvariable sigma
+e_ZSD_elast_Komp=sigma/E;
+e_ZSD_plast_Komp=(sigma/K_sKomp)^(1/n_sKomp);
+e_ZSD_Komp = e_ZSD_elast_Komp + e_ZSD_plast_Komp;
 
+%Plotten beider Kurven
+figure
+%mittels Regression
+plot(subs(e_ZSD,sigma,sigmaw),sigmaw);
+hold on
+%mittels Kompatibilitaetsbed
+plot(subs(e_ZSD_Komp,sigma,sigmaw),sigmaw,'r-.');
+legend('ZSD-Regression','ZSD-Kompatibilitätsbedingungen','Location','Best');
+hold off;
+xlabel('Dehnung \epsilon');
+ylabel('Spannung \sigma_a');
 
+%Schaedigungsparameter
+P_SWT=sqrt(sigma_f^2*(2*N)^(2*b)+sigma_f*epsilon_f*E*(2*N)^(b+c));
 
+Nw=[1E2:1000:1E5];
+figure
+plot(Nw,subs(P_SWT,N,NN));
+hold on
+plot(Nw,subs(P_SWT_alt,N,Nw),'r-.');
+legend('P_{SWT}','Location','Best');
+hold off;
+xlabel('Lastwechselzahl N');
+ylabel('P_{SWT}');
 
+%Uebertragungsfaktor
+K_t=2.45;
+A=(32-8)*6; %mm^2
+C=K_t/A;
