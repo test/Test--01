@@ -114,11 +114,9 @@ ylabel('Spannung \sigma_a');
 %Schaedigungsparameter
 P_SWT=sqrt(sigma_f^2*(2*N)^(2*b)+sigma_f*epsilon_f*E*(2*N)^(b+c));
 
-Nw=[1E2:1000:1E5];
+NN=[1E2:1000:1E5];
 figure
-plot(Nw,subs(P_SWT,N,NN));
-hold on
-plot(Nw,subs(P_SWT_alt,N,Nw),'r-.');
+plot(NN,subs(P_SWT,N,NN));
 legend('P_{SWT}','Location','Best');
 hold off;
 xlabel('Lastwechselzahl N');
